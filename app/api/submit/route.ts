@@ -48,9 +48,9 @@ function validar(body: unknown): body is RespostasFormulario {
 // Strings vazias viram null para alinhar com colunas nullable no banco.
 // ---------------------------------------------------------------------------
 
-function normalizarOpcional(valor: string | undefined): string | null {
-  if (valor === undefined || valor.trim() === '') return null
-  return valor
+function normalizarOpcional(valor?: string | null): string | undefined {
+  if (!valor || valor.trim() === '') return undefined
+  return valor.trim()
 }
 
 // ---------------------------------------------------------------------------
