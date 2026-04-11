@@ -2,7 +2,7 @@
   "name": "logos-diagnostico",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+  "type": "module""scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
