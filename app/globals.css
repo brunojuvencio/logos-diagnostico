@@ -1,0 +1,9 @@
+/**
+ * LOGOS — Ponto de entrada de estilos globais do Next.js
+ *
+ * Este arquivo delega toda a configuração de tokens para styles/globals.css.
+ * NÃO adicione tokens ou valores de design aqui — edite styles/globals.css.
+ */
+
+@import "../styles/globals.css";
+@config "../tailwind.config.ts";

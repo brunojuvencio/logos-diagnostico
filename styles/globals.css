@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   LOGOS DESIGN SYSTEM — CSS Variables + Tailwind v4 @theme
+   Fonte de verdade: design.json v1.0.0
+   NÃO editar valores aqui manualmente — sincronizar com design.json
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   :root — Tokens em modo claro (Light Mode)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Cores da marca */
+  --logos-vespera:           #1A1710;
+  --logos-dourado:           #B8952A;
+  --logos-dourado-claro:     #D4AE4E;
+  --logos-dourado-faint:     #F0E8CC;
+  --logos-pergaminho:        #F5F2EB;
+  --logos-pergaminho-escuro: #EDE9DF;
+  --logos-papel:             #FDFCF8;
+
+  /* Cores de texto */
+  --logos-tinta:             #0E0E0C;
+  --logos-tinta-mid:         #3A3830;
+  --logos-tinta-light:       #7A7668;
+  --logos-tinta-faint:       #C8C4B8;
+  --logos-tinta-invertida:   #FDFCF8;
+  --logos-tinta-dourada:     #B8952A;
+
+  /* Cores semânticas */
+  --logos-sucesso:           #3B6D11;
+  --logos-sucesso-fundo:     #EAF3DE;
+  --logos-aviso:             #854F0B;
+  --logos-aviso-fundo:       #FAEEDA;
+  --logos-erro:              #A32D2D;
+  --logos-erro-fundo:        #FCEBEB;
+  --logos-info:              #0C447C;
+  --logos-info-fundo:        #E6F1FB;
+
+  /* Bordas */
+  --logos-border:            rgba(184, 149, 42, 0.15);
+  --logos-border-hover:      rgba(184, 149, 42, 0.30);
+  --logos-border-focus:      rgba(184, 149, 42, 0.60);
+  --logos-border-emphasis:   #B8952A;
+  --logos-border-width-thin:     0.5px;
+  --logos-border-width-default:  1px;
+  --logos-border-width-emphasis: 2px;
+  --logos-border-width-accent:   3px;
+
+  /* Border radius */
+  --logos-radius-sm:   4px;
+  --logos-radius-md:   8px;
+  --logos-radius-lg:   12px;
+  --logos-radius-xl:   16px;
+  --logos-radius-full: 9999px;
+
+  /* Sombras */
+  --logos-shadow-sm:   0 1px 3px rgba(14, 14, 12, 0.06);
+  --logos-shadow-md:   0 4px 12px rgba(14, 14, 12, 0.08);
+  --logos-shadow-lg:   0 8px 24px rgba(14, 14, 12, 0.10);
+  --logos-shadow-gold: 0 0 0 3px rgba(184, 149, 42, 0.20);
+
+  /* Tipografia */
+  --logos-font-display: 'Cormorant Garamond', Georgia, serif;
+  --logos-font-body:    'DM Sans', system-ui, sans-serif;
+
+  /* Espaçamentos */
+  --logos-space-1:  4px;
+  --logos-space-2:  8px;
+  --logos-space-3:  12px;
+  --logos-space-4:  16px;
+  --logos-space-5:  20px;
+  --logos-space-6:  24px;
+  --logos-space-8:  32px;
+  --logos-space-10: 40px;
+  --logos-space-12: 48px;
+  --logos-space-16: 64px;
+  --logos-space-20: 80px;
+  --logos-space-24: 96px;
+
+  /* Layout */
+  --logos-page-padding-mobile:  16px;
+  --logos-page-padding-tablet:  24px;
+  --logos-page-padding-desktop: 40px;
+  --logos-max-width-content:    720px;
+  --logos-max-width-app:        1200px;
+
+  /* Motion */
+  --logos-duration-fast:    120ms;
+  --logos-duration-default: 200ms;
+  --logos-duration-slow:    350ms;
+  --logos-duration-page:    500ms;
+  --logos-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --logos-ease-enter:   cubic-bezier(0.0, 0.0, 0.2, 1);
+  --logos-ease-exit:    cubic-bezier(0.4, 0.0, 1, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Dark Mode — sobrescreve tokens de superfície e texto
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --logos-papel:           #0E0D0A;
+    --logos-pergaminho:      #1A1710;
+    --logos-pergaminho-escuro: #242118;
+
+    --logos-tinta:           #F0EDE5;
+    --logos-tinta-mid:       #B0AB9E;
+    --logos-tinta-light:     #6E6A5E;
+
+    --logos-border:          rgba(184, 149, 42, 0.15);
+    --logos-border-hover:    rgba(184, 149, 42, 0.35);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Tailwind v4 — @theme
+   Mapeia os tokens para utilities do Tailwind
+   Ex: bg-brand-vespera, text-brand-dourado, shadow-logos-md, rounded-logos-lg
+   -------------------------------------------------------------------------- */
+@theme {
+  /* Cores */
+  --color-brand-vespera:           var(--logos-vespera);
+  --color-brand-dourado:           var(--logos-dourado);
+  --color-brand-dourado-claro:     var(--logos-dourado-claro);
+  --color-brand-dourado-faint:     var(--logos-dourado-faint);
+  --color-brand-pergaminho:        var(--logos-pergaminho);
+  --color-brand-pergaminho-escuro: var(--logos-pergaminho-escuro);
+  --color-brand-papel:             var(--logos-papel);
+
+  --color-text-primario:   var(--logos-tinta);
+  --color-text-secundario: var(--logos-tinta-mid);
+  --color-text-terciario:  var(--logos-tinta-light);
+  --color-text-desativado: var(--logos-tinta-faint);
+  --color-text-invertido:  var(--logos-tinta-invertida);
+  --color-text-dourado:    var(--logos-tinta-dourada);
+
+  --color-sucesso:       var(--logos-sucesso);
+  --color-sucesso-fundo: var(--logos-sucesso-fundo);
+  --color-aviso:         var(--logos-aviso);
+  --color-aviso-fundo:   var(--logos-aviso-fundo);
+  --color-erro:          var(--logos-erro);
+  --color-erro-fundo:    var(--logos-erro-fundo);
+  --color-info:          var(--logos-info);
+  --color-info-fundo:    var(--logos-info-fundo);
+
+  /* Tipografia */
+  --font-display: var(--logos-font-display);
+  --font-body:    var(--logos-font-body);
+
+  /* Border radius */
+  --radius-sm:   var(--logos-radius-sm);
+  --radius-md:   var(--logos-radius-md);
+  --radius-lg:   var(--logos-radius-lg);
+  --radius-xl:   var(--logos-radius-xl);
+  --radius-full: var(--logos-radius-full);
+
+  /* Sombras */
+  --shadow-sm:   var(--logos-shadow-sm);
+  --shadow-md:   var(--logos-shadow-md);
+  --shadow-lg:   var(--logos-shadow-lg);
+  --shadow-gold: var(--logos-shadow-gold);
+
+  /* Espaçamentos (complementam a escala base do Tailwind) */
+  --spacing-logos-1:  var(--logos-space-1);
+  --spacing-logos-2:  var(--logos-space-2);
+  --spacing-logos-3:  var(--logos-space-3);
+  --spacing-logos-4:  var(--logos-space-4);
+  --spacing-logos-5:  var(--logos-space-5);
+  --spacing-logos-6:  var(--logos-space-6);
+  --spacing-logos-8:  var(--logos-space-8);
+  --spacing-logos-10: var(--logos-space-10);
+  --spacing-logos-12: var(--logos-space-12);
+  --spacing-logos-16: var(--logos-space-16);
+  --spacing-logos-20: var(--logos-space-20);
+  --spacing-logos-24: var(--logos-space-24);
+}
+
+/* --------------------------------------------------------------------------
+   Estilos base do produto
+   -------------------------------------------------------------------------- */
+body {
+  background-color: var(--logos-papel);
+  color: var(--logos-tinta);
+  font-family: var(--logos-font-body);
+  /* Profundidade sutil: gradiente radial centralizado */
+  background-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    var(--logos-pergaminho) 0%,
+    var(--logos-papel) 70%
+  );
+  background-attachment: fixed;
+}
+
+/* --------------------------------------------------------------------------
+   Animação de transição entre steps
+   -------------------------------------------------------------------------- */
+@keyframes step-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-enter {
+  animation: step-enter var(--logos-duration-slow) var(--logos-ease-enter) both;
+}
+
+/* --------------------------------------------------------------------------
+   Focus styles — acessibilidade e coerência com o design system
+   -------------------------------------------------------------------------- */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--logos-border-focus) !important;
+  box-shadow: 0 0 0 3px rgba(184, 149, 42, 0.12);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--logos-dourado);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbar discreta — para não competir com o design
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--logos-tinta-faint);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--logos-tinta-light);
+}
