@@ -10,10 +10,8 @@
 
 import OpenAI from 'openai'
 
-const apiKey = process.env.OPENAI_API_KEY
-
-if (!apiKey) {
-  throw new Error('OPENAI_API_KEY não definida. Adicione ao .env.local.')
-}
-
-export const openai = new OpenAI({ apiKey })
+// Validação acontece em runtime (na API route), não no build.
+// Um apiKey vazio fará a chamada falhar com erro de autenticação — comportamento esperado.
+export const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY ?? '',
+})

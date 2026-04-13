@@ -13,7 +13,7 @@
  */
 
 import { openai } from '@/lib/openai'
-import type { RespostasFormulario } from '@/types/pesquisa'
+import type { RespostasFormulario, DiagnosticoJson } from '@/types/pesquisa'
 
 // ---------------------------------------------------------------------------
 // Contrato público
@@ -21,16 +21,10 @@ import type { RespostasFormulario } from '@/types/pesquisa'
 
 export interface ResultadoDiagnostico {
   perfil_gerado: string
-  diagnostico_json: Record<string, unknown>
+  diagnostico_json: DiagnosticoJson
 }
 
-interface DiagnosticoShape {
-  perfil_nome: string
-  explicacao: string
-  trava_principal: string
-  insight: string
-  proximo_passo: string
-}
+type DiagnosticoShape = DiagnosticoJson
 
 // ---------------------------------------------------------------------------
 // JSON Schema para saída estruturada

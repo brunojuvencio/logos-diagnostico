@@ -58,10 +58,10 @@ export type Tensao =
 
 export interface BlocoContextoDor {
   rotina: Rotina
-  dificuldade_aberta: string
+  dificuldade_aberta?: string
   ferramentas: Ferramenta[]
   satisfacao: Satisfacao
-  mudaria_aberto: string
+  mudaria_aberto?: string
   tensao: Tensao
 }
 
@@ -92,10 +92,10 @@ export type DisposicaoPagar =
 
 export interface BlocoReacaoConceito {
   reacao_conceito: ReacaoConceito
-  receio_aberto: string
+  receio_aberto?: string
   feature_mais_valiosa: FeatureValiosa
   disposicao_pagar: DisposicaoPagar
-  objecao_aberta: string
+  objecao_aberta?: string
 }
 
 // ---------------------------------------------------------------------------

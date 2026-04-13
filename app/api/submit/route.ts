@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { gerarDiagnostico } from '@/lib/diagnostico'
-import type { RespostasFormulario } from '@/types/pesquisa'
+import type { RespostasFormulario, DiagnosticoJson } from '@/types/pesquisa'
 import type { RespostaInsert } from '@/lib/supabase'
 
 // ---------------------------------------------------------------------------
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
 
   // 3. Gerar diagnóstico
   let perfil_gerado: string
-  let diagnostico_json: Record<string, unknown>
+  let diagnostico_json: DiagnosticoJson
 
   try {
     const resultado = await gerarDiagnostico(respostas)

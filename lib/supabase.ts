@@ -18,12 +18,11 @@ import type { RespostaCompleta } from '@/types/pesquisa'
 // Variáveis de ambiente — validadas em runtime
 // ---------------------------------------------------------------------------
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Variáveis lidas em runtime; strings vazias fazem a chamada falhar com erro de auth
+// em vez de quebrar o build. Configure as envs no painel do Vercel.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl) throw new Error('NEXT_PUBLIC_SUPABASE_URL não definida.')
-if (!supabaseAnonKey) throw new Error('NEXT_PUBLIC_SUPABASE_ANON_KEY não definida.')
 
 // ---------------------------------------------------------------------------
 // Tipos do banco — mapeiam para as tabelas do Supabase
