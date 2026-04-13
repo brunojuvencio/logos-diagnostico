@@ -44,7 +44,11 @@ export interface RespostaRow extends RespostaCompleta {
 export type RespostaInsert = Omit<RespostaRow, 'id' | 'created_at'>
 
 // ---------------------------------------------------------------------------
-// Database type helper — compatível com `supabase gen types typescript`
+// Database type helper — compatível com `supabase gen types typescript` v2.103+
+//
+// A partir do @supabase/postgrest-js v1.19+, o GenericSchema exige que todos
+// os campos abaixo estejam presentes; sem eles, os tipos das tabelas resolvem
+// para `never` e o .insert() / .select() não aceita o payload.
 // ---------------------------------------------------------------------------
 
 export type Database = {
@@ -54,7 +58,20 @@ export type Database = {
         Row: RespostaRow
         Insert: RespostaInsert
         Update: Partial<RespostaInsert>
+        Relationships: []
       }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
