@@ -57,6 +57,7 @@ export default function PesquisaPage() {
   const [step, setStep] = useState(0)
   const [enviando, setEnviando] = useState(false)
   const [erroSubmit, setErroSubmit] = useState<string | null>(null)
+  const frequenciaNuncaSelecionada = form.frequencia === 'nunca'
 
   const totalSteps = 5
 
@@ -127,7 +128,7 @@ export default function PesquisaPage() {
   // Tela de saída — frequência "nunca"
   // ---------------------------------------------------------------------------
 
-  if (form.frequencia === 'nunca') {
+  if (frequenciaNuncaSelecionada) {
     return (
       <main style={{ minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--logos-space-6)' }}>
         <div style={{ width: '100%', maxWidth: '480px', textAlign: 'center' }}>
@@ -219,7 +220,7 @@ export default function PesquisaPage() {
                 <OptionButton label="A cada 15 dias"   selected={form.frequencia === 'quinzenal'}   onSelect={() => updateField('frequencia', 'quinzenal')} />
                 <OptionButton label="Uma vez por mês"  selected={form.frequencia === 'mensal'}      onSelect={() => updateField('frequencia', 'mensal')} />
                 <OptionButton label="Raramente"        selected={form.frequencia === 'raramente'}   onSelect={() => updateField('frequencia', 'raramente')} />
-                <OptionButton label="Nunca prego"      selected={form.frequencia === 'nunca'}       onSelect={() => updateField('frequencia', 'nunca')} />
+                <OptionButton label="Nunca prego"      selected={frequenciaNuncaSelecionada}        onSelect={() => updateField('frequencia', 'nunca')} />
               </QuestionCard>
 
               <QuestionCard
