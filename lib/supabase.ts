@@ -78,9 +78,14 @@ export type Database = {
 
 // ---------------------------------------------------------------------------
 // Client público — browser e Server Components sem privilégio elevado
+//
+// Nota: createClient sem generic evita incompatibilidade de tipos com
+// @supabase/supabase-js@2.103+ (GenericSchema constraint mais restrita).
+// Os routes usam casts explícitos (as RespostaRow) onde necessário.
 // ---------------------------------------------------------------------------
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabase = createClient<any>(supabaseUrl, supabaseAnonKey)
 
 // ---------------------------------------------------------------------------
 // Client admin — apenas no servidor (API Routes / Server Actions)
@@ -91,7 +96,8 @@ export function getSupabaseAdmin() {
   if (!supabaseServiceRoleKey) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY não definida. Use apenas no servidor.')
   }
-  return createClient<Database>(supabaseUrl!, supabaseServiceRoleKey, {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return createClient<any>(supabaseUrl, supabaseServiceRoleKey, {
     auth: { persistSession: false },
   })
 }
