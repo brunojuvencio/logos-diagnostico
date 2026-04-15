@@ -36,6 +36,11 @@ export interface TrackEventOptions {
   formName?: string
 }
 
+export interface FunnelTrackOptions {
+  eventId?: string
+  formName?: string
+}
+
 // Mapeamento Meta → GA4
 const EVENT_MAP: Record<string, string> = {
   PageView:              'page_view',
@@ -84,6 +89,14 @@ async function fireWithRetry(
   }
 }
 
+function buildBaseTrackingPayload() {
+  const snapshot = getTrackingSnapshot()
+  return {
+    snapshot,
+    ga4ClientId: getGA4ClientId(),
+  }
+}
+
 // ---------------------------------------------------------------------------
 // trackEvent — função principal
 // ---------------------------------------------------------------------------
@@ -104,10 +117,9 @@ export function trackEvent(
 ): void {
   if (typeof window === 'undefined') return
 
-  const snapshot     = getTrackingSnapshot()
+  const { snapshot, ga4ClientId } = buildBaseTrackingPayload()
   const ga4EventName = EVENT_MAP[metaEventName] ?? metaEventName.toLowerCase()
   const eventId      = options.eventId ?? generateEventId()
-  const ga4ClientId  = getGA4ClientId()
 
   // Payload Meta
   const metaBody = {
@@ -149,6 +161,31 @@ export function trackEvent(
     fireWithRetry('/api/tracking/meta', metaBody),
     fireWithRetry('/api/tracking/ga4',  ga4Body),
   ]).catch(() => {
+    // silencia rejeições não tratadas
+  })
+}
+
+export function trackFunnelEvent(
+  eventType: 'step_view' | 'step_continue' | 'submit',
+  stepNumber: number,
+  stepName: string,
+  options: FunnelTrackOptions = {}
+): void {
+  if (typeof window === 'undefined') return
+
+  const { snapshot, ga4ClientId } = buildBaseTrackingPayload()
+
+  const body = {
+    sessionId: ga4ClientId,
+    eventType,
+    stepNumber,
+    stepName,
+    formName: options.formName ?? 'diagnostico',
+    eventId: options.eventId ?? generateEventId(),
+    ...snapshot,
+  }
+
+  fireWithRetry('/api/tracking/funnel', body).catch(() => {
     // silencia rejeições não tratadas
   })
 }

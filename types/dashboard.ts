@@ -65,6 +65,23 @@ export interface SerieRespondentesPorDia {
   lista: number
 }
 
+export interface FunnelStepStats {
+  stepNumber: number
+  stepName: string
+  viewed: number
+  continued: number
+  dropped: number
+  completionRate: number
+}
+
+export interface FunnelOverview {
+  started: number
+  completed: number
+  overallCompletionRate: number
+  biggestDropoffStep: number | null
+  biggestDropoffLabel: string | null
+}
+
 // ---------------------------------------------------------------------------
 // STATS AGREGADAS
 // ---------------------------------------------------------------------------
@@ -85,4 +102,6 @@ export interface DashboardStats {
   hipoteses: HipotesesDashboard
 
   porDia: SerieRespondentesPorDia[]
+  funil: FunnelOverview
+  funilPorEtapa: FunnelStepStats[]
 }

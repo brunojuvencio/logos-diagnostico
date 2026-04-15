@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import type { DashboardStats } from '@/types/dashboard'
-import type { RespostaRow } from '@/lib/supabase'
+import type { FunnelEventRow, RespostaRow } from '@/lib/supabase'
+
+const STEP_NAMES = ['Sobre você', 'Seu preparo', 'Uma ideia', 'Seu perfil', 'Quase lá'] as const
 
 export async function GET() {
   const admin = getSupabaseAdmin()
@@ -17,6 +19,18 @@ export async function GET() {
   }
 
   const rows = (data ?? []) as RespostaRow[]
+
+  let funnelRows: FunnelEventRow[] = []
+  const { data: funnelData, error: funnelError } = await admin
+    .from('funil_eventos')
+    .select('*')
+    .order('created_at', { ascending: true })
+
+  if (funnelError) {
+    console.warn('[dashboard/stats] funil_eventos indisponível:', funnelError.message)
+  } else {
+    funnelRows = (funnelData ?? []) as FunnelEventRow[]
+  }
 
   // ---------------------------------------------------------------------------
   // Métricas básicas
@@ -105,6 +119,69 @@ export async function GET() {
   }
 
   // ---------------------------------------------------------------------------
+  // Funil do formulário
+  // ---------------------------------------------------------------------------
+
+  const viewSets = STEP_NAMES.map(() => new Set<string>())
+  const continueSets = STEP_NAMES.map(() => new Set<string>())
+  const submitSessions = new Set<string>()
+
+  for (const row of funnelRows) {
+    if (row.step_number < 0 || row.step_number >= STEP_NAMES.length) continue
+
+    if (row.event_type === 'step_view') {
+      viewSets[row.step_number].add(row.session_id)
+    }
+    if (row.event_type === 'step_continue') {
+      continueSets[row.step_number].add(row.session_id)
+    }
+    if (row.event_type === 'submit') {
+      submitSessions.add(row.session_id)
+    }
+  }
+
+  const funilPorEtapa = STEP_NAMES.map((stepName, index) => {
+    const viewed = viewSets[index].size
+    const continued = index === STEP_NAMES.length - 1
+      ? submitSessions.size
+      : continueSets[index].size
+    const dropped = Math.max(viewed - continued, 0)
+    const completionRate = viewed > 0
+      ? Math.round((continued / viewed) * 100)
+      : 0
+
+    return {
+      stepNumber: index,
+      stepName,
+      viewed,
+      continued,
+      dropped,
+      completionRate,
+    }
+  })
+
+  const started = funilPorEtapa[0]?.viewed ?? 0
+  const completed = submitSessions.size
+  const overallCompletionRate = started > 0
+    ? Math.round((completed / started) * 100)
+    : 0
+
+  const biggestDropoff = funilPorEtapa.reduce<{
+    dropped: number
+    stepNumber: number | null
+    stepName: string | null
+  }>((acc, step) => {
+    if (step.dropped > acc.dropped) {
+      return {
+        dropped: step.dropped,
+        stepNumber: step.stepNumber,
+        stepName: step.stepName,
+      }
+    }
+    return acc
+  }, { dropped: 0, stepNumber: null, stepName: null })
+
+  // ---------------------------------------------------------------------------
   // Resposta
   // ---------------------------------------------------------------------------
 
@@ -121,6 +198,14 @@ export async function GET() {
     porTensao,
     hipoteses,
     porDia,
+    funil: {
+      started,
+      completed,
+      overallCompletionRate,
+      biggestDropoffStep: biggestDropoff.stepNumber,
+      biggestDropoffLabel: biggestDropoff.stepName,
+    },
+    funilPorEtapa,
   }
 
   return NextResponse.json(stats, {

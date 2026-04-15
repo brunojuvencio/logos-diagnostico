@@ -37,11 +37,31 @@ export interface RespostaRow extends RespostaCompleta {
   created_at: string
 }
 
+export interface FunnelEventRow {
+  id: string
+  created_at: string
+  session_id: string
+  event_type: 'step_view' | 'step_continue' | 'submit'
+  step_number: number
+  step_name: string
+  form_name?: string | null
+  page_url?: string | null
+  referrer?: string | null
+  user_agent?: string | null
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  utm_term?: string | null
+  utm_content?: string | null
+  event_id?: string | null
+}
+
 /**
  * Payload de insert — campos fornecidos pelo sistema antes de salvar.
  * `id` e `created_at` são gerados pelo Supabase.
  */
 export type RespostaInsert = Omit<RespostaRow, 'id' | 'created_at'>
+export type FunnelEventInsert = Omit<FunnelEventRow, 'id' | 'created_at'>
 
 // ---------------------------------------------------------------------------
 // Database type helper — compatível com `supabase gen types typescript` v2.103+
@@ -58,6 +78,12 @@ export type Database = {
         Row: RespostaRow
         Insert: RespostaInsert
         Update: Partial<RespostaInsert>
+        Relationships: []
+      }
+      funil_eventos: {
+        Row: FunnelEventRow
+        Insert: FunnelEventInsert
+        Update: Partial<FunnelEventInsert>
         Relationships: []
       }
     }

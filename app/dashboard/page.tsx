@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 import { StatCard } from '@/components/dashboard/StatCard'
@@ -7,46 +7,46 @@ import type { DashboardStats } from '@/types/dashboard'
 import type { DashboardInsights } from '@/lib/dashboard-insights'
 
 // ---------------------------------------------------------------------------
-// Labels legíveis para chaves de banco
+// Labels legÃ­veis para chaves de banco
 // ---------------------------------------------------------------------------
 
 const LABEL_PAPEL: Record<string, string> = {
-  celula:    'Líder de célula',
-  jovens:    'Líder de jovens',
-  pastor:    'Pastor / Presbítero',
+  celula:    'LÃ­der de cÃ©lula',
+  jovens:    'LÃ­der de jovens',
+  pastor:    'Pastor / PresbÃ­tero',
   estudante: 'Estudante de teologia',
-  outro:     'Outra liderança',
+  outro:     'Outra lideranÃ§a',
 }
 
 const LABEL_REACAO: Record<string, string> = {
   resolve_exato: 'Resolve exatamente',
-  parece_util:   'Parece útil',
-  ja_tenho:      'Já tenho algo',
-  nao_vejo:      'Não vejo necessidade',
+  parece_util:   'Parece Ãºtil',
+  ja_tenho:      'JÃ¡ tenho algo',
+  nao_vejo:      'NÃ£o vejo necessidade',
   tenho_receio:  'Tenho receio de IA',
 }
 
 const LABEL_PAGAR: Record<string, string> = {
-  nao_pagaria: 'Não pagaria',
-  ate_15:      'Até R$ 15',
-  '16_30':     'R$ 16–30',
-  '31_50':     'R$ 31–50',
+  nao_pagaria: 'NÃ£o pagaria',
+  ate_15:      'AtÃ© R$ 15',
+  '16_30':     'R$ 16â€“30',
+  '31_50':     'R$ 31â€“50',
   mais_50:     'Mais de R$ 50',
 }
 
 const LABEL_TENSAO: Record<string, string> = {
-  frequente:   'Com frequência',
+  frequente:   'Com frequÃªncia',
   raramente:   'Raramente',
-  nao:         'Não',
-  prefiro_nao: 'Prefere não responder',
+  nao:         'NÃ£o',
+  prefiro_nao: 'Prefere nÃ£o responder',
 }
 
 const LABEL_FEATURE: Record<string, string> = {
   palavras_originais: 'Palavras originais',
-  contexto_historico: 'Contexto histórico',
-  anotacao:           'Anotações integradas',
-  esboco_do_estudo:   'Esboço do estudo',
-  historico:          'Histórico de sermões',
+  contexto_historico: 'Contexto histÃ³rico',
+  anotacao:           'AnotaÃ§Ãµes integradas',
+  esboco_do_estudo:   'EsboÃ§o do estudo',
+  historico:          'HistÃ³rico de sermÃµes',
 }
 
 // ---------------------------------------------------------------------------
@@ -139,14 +139,14 @@ function HipoteseRow({
           backgroundColor: confirmada ? 'var(--logos-sucesso-fundo)' : 'var(--logos-erro-fundo)',
           color: confirmada ? 'var(--logos-sucesso)' : 'var(--logos-erro)',
         }}>
-          {confirmada ? 'Confirmada' : 'Não confirmada'}
+          {confirmada ? 'Confirmada' : 'NÃ£o confirmada'}
         </span>
       </div>
     </div>
   )
 }
 
-// Sparkline de barras verticais para série por dia
+// Sparkline de barras verticais para sÃ©rie por dia
 function Sparkline({ data }: { data: DashboardStats['porDia'] }) {
   if (data.length === 0) return (
     <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '13px', color: 'var(--logos-tinta-light)' }}>
@@ -205,7 +205,7 @@ function Sparkline({ data }: { data: DashboardStats['porDia'] }) {
         ))}
       </div>
 
-      {/* Eixo X — apenas primeiro e último */}
+      {/* Eixo X â€” apenas primeiro e Ãºltimo */}
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         {[data[0], data[data.length - 1]].map((d) => d && (
           <span key={d.data} style={{
@@ -237,7 +237,7 @@ function Sparkline({ data }: { data: DashboardStats['porDia'] }) {
 }
 
 // ---------------------------------------------------------------------------
-// Página principal
+// PÃ¡gina principal
 // ---------------------------------------------------------------------------
 
 export default function DashboardPage() {
@@ -254,7 +254,7 @@ export default function DashboardPage() {
         return r.json() as Promise<DashboardStats>
       })
       .then(setStats)
-      .catch(() => setErro('Não foi possível carregar os dados.'))
+      .catch(() => setErro('NÃ£o foi possÃ­vel carregar os dados.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -267,7 +267,7 @@ export default function DashboardPage() {
         return r.json() as Promise<DashboardInsights>
       })
       .then(setInsights)
-      .catch(() => setErro('Não foi possível gerar os insights.'))
+      .catch(() => setErro('NÃ£o foi possÃ­vel gerar os insights.'))
       .finally(() => setLoadingAI(false))
   }
 
@@ -289,7 +289,7 @@ export default function DashboardPage() {
             color: 'var(--logos-tinta-light)',
             marginBottom: 'var(--logos-space-2)',
           }}>
-            Logos Diagnóstico
+            Logos DiagnÃ³stico
           </p>
           <h1 style={{
             fontFamily: 'var(--logos-font-display)',
@@ -298,14 +298,14 @@ export default function DashboardPage() {
             color: 'var(--logos-tinta)',
             margin: 0,
           }}>
-            Visão geral
+            VisÃ£o geral
           </h1>
         </header>
 
         {/* Loading */}
         {loading && (
           <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '14px', color: 'var(--logos-tinta-light)' }}>
-            Carregando dados…
+            Carregando dadosâ€¦
           </p>
         )}
 
@@ -316,11 +316,11 @@ export default function DashboardPage() {
           </p>
         )}
 
-        {/* Conteúdo */}
+        {/* ConteÃºdo */}
         {stats && (
           <>
             {/* Cards de topo */}
-            <Section titulo="Métricas principais">
+            <Section titulo="MÃ©tricas principais">
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
@@ -330,7 +330,7 @@ export default function DashboardPage() {
                 <StatCard
                   label="Respondentes"
                   value={stats.total}
-                  sub="total até agora"
+                  sub="total atÃ© agora"
                 />
                 <StatCard
                   label="Lista de espera"
@@ -339,12 +339,12 @@ export default function DashboardPage() {
                   trend="up"
                 />
                 <StatCard
-                  label="Taxa de conversão"
+                  label="Taxa de conversÃ£o"
                   value={`${stats.taxaConversao}%`}
                   trend={stats.taxaConversao >= 50 ? 'up' : 'neutral'}
                 />
                 <StatCard
-                  label="Satisfação média"
+                  label="SatisfaÃ§Ã£o mÃ©dia"
                   value={`${stats.satisfacaoMedia}/5`}
                   sub="processo atual do pregador"
                   trend={stats.satisfacaoMedia <= 3 ? 'down' : 'neutral'}
@@ -352,15 +352,156 @@ export default function DashboardPage() {
               </div>
             </Section>
 
-            {/* Série por dia */}
+            <Section titulo="Funil do formulário">
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                gap: 'var(--logos-space-4)',
+                marginBottom: 'var(--logos-space-4)',
+              }}>
+                <StatCard
+                  label="Começaram"
+                  value={stats.funil.started}
+                  sub="viram a primeira etapa"
+                />
+                <StatCard
+                  label="Concluíram"
+                  value={stats.funil.completed}
+                  sub="enviaram o formulário"
+                  trend={stats.funil.completed > 0 ? 'up' : 'neutral'}
+                />
+                <StatCard
+                  label="Conclusão do funil"
+                  value={`${stats.funil.overallCompletionRate}%`}
+                  sub="do início até o envio"
+                  trend={stats.funil.overallCompletionRate >= 35 ? 'up' : 'neutral'}
+                />
+                <StatCard
+                  label="Maior fuga"
+                  value={stats.funil.biggestDropoffStep !== null ? `Etapa ${stats.funil.biggestDropoffStep + 1}` : '—'}
+                  sub={stats.funil.biggestDropoffLabel ?? 'Sem dados ainda'}
+                  trend={stats.funil.biggestDropoffStep !== null ? 'down' : 'neutral'}
+                />
+              </div>
+
+              <Card>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--logos-space-4)' }}>
+                  {stats.funilPorEtapa.map((etapa) => (
+                    <div
+                      key={etapa.stepNumber}
+                      style={{
+                        paddingBottom: 'var(--logos-space-4)',
+                        borderBottom: 'var(--logos-border-width-thin) solid var(--logos-border)',
+                      }}
+                    >
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'baseline',
+                        gap: 'var(--logos-space-4)',
+                        marginBottom: 'var(--logos-space-2)',
+                      }}>
+                        <div>
+                          <p style={{
+                            fontFamily: 'var(--logos-font-body)',
+                            fontSize: '11px',
+                            fontWeight: 500,
+                            letterSpacing: '0.12em',
+                            textTransform: 'uppercase',
+                            color: 'var(--logos-tinta-light)',
+                            margin: '0 0 2px',
+                          }}>
+                            Etapa {etapa.stepNumber + 1}
+                          </p>
+                          <p style={{
+                            fontFamily: 'var(--logos-font-body)',
+                            fontSize: '14px',
+                            color: 'var(--logos-tinta)',
+                            margin: 0,
+                          }}>
+                            {etapa.stepName}
+                          </p>
+                        </div>
+
+                        <p style={{
+                          fontFamily: 'var(--logos-font-display)',
+                          fontSize: '28px',
+                          lineHeight: 1,
+                          color: 'var(--logos-dourado)',
+                          margin: 0,
+                        }}>
+                          {etapa.completionRate}%
+                        </p>
+                      </div>
+
+                      <div style={{
+                        width: '100%',
+                        height: '8px',
+                        borderRadius: '9999px',
+                        backgroundColor: 'var(--logos-pergaminho-escuro)',
+                        overflow: 'hidden',
+                        marginBottom: 'var(--logos-space-3)',
+                      }}>
+                        <div style={{
+                          width: `${etapa.completionRate}%`,
+                          height: '100%',
+                          borderRadius: '9999px',
+                          backgroundColor: 'var(--logos-dourado)',
+                        }} />
+                      </div>
+
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+                        gap: 'var(--logos-space-3)',
+                      }}>
+                        {[
+                          { label: 'Viram', value: etapa.viewed },
+                          { label: 'Avançaram', value: etapa.continued },
+                          { label: 'Fugiram', value: etapa.dropped },
+                        ].map((item) => (
+                          <div key={item.label} style={{
+                            padding: 'var(--logos-space-3)',
+                            backgroundColor: 'var(--logos-pergaminho)',
+                            borderRadius: 'var(--logos-radius-sm)',
+                          }}>
+                            <p style={{
+                              fontFamily: 'var(--logos-font-body)',
+                              fontSize: '10px',
+                              fontWeight: 500,
+                              letterSpacing: '0.1em',
+                              textTransform: 'uppercase',
+                              color: 'var(--logos-tinta-light)',
+                              margin: '0 0 4px',
+                            }}>
+                              {item.label}
+                            </p>
+                            <p style={{
+                              fontFamily: 'var(--logos-font-display)',
+                              fontSize: '24px',
+                              lineHeight: 1,
+                              color: 'var(--logos-tinta)',
+                              margin: 0,
+                            }}>
+                              {item.value}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </Section>
+            {/* SÃ©rie por dia */}
             <Section titulo="Respondentes por dia">
               <Card>
                 <Sparkline data={stats.porDia} />
               </Card>
             </Section>
 
-            {/* Grid de distribuições */}
-            <Section titulo="Distribuições">
+            {/* Grid de distribuiÃ§Ãµes */}
+            <Section titulo="DistribuiÃ§Ãµes">
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
@@ -368,7 +509,7 @@ export default function DashboardPage() {
               }}>
                 <Card>
                   <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--logos-tinta-light)', marginBottom: 'var(--logos-space-5)' }}>
-                    Reação ao conceito
+                    ReaÃ§Ã£o ao conceito
                   </p>
                   <BarChart
                     data={toBarData(stats.porReacaoConceito, LABEL_REACAO)}
@@ -378,7 +519,7 @@ export default function DashboardPage() {
 
                 <Card>
                   <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--logos-tinta-light)', marginBottom: 'var(--logos-space-5)' }}>
-                    Disposição a pagar
+                    DisposiÃ§Ã£o a pagar
                   </p>
                   <BarChart
                     data={toBarData(stats.porDisposicaoPagar, LABEL_PAGAR)}
@@ -389,7 +530,7 @@ export default function DashboardPage() {
 
                 <Card>
                   <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--logos-tinta-light)', marginBottom: 'var(--logos-space-5)' }}>
-                    Papel / função
+                    Papel / funÃ§Ã£o
                   </p>
                   <BarChart
                     data={toBarData(stats.porPapel, LABEL_PAPEL)}
@@ -400,7 +541,7 @@ export default function DashboardPage() {
 
                 <Card>
                   <p style={{ fontFamily: 'var(--logos-font-body)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--logos-tinta-light)', marginBottom: 'var(--logos-space-5)' }}>
-                    Tensão no preparo
+                    TensÃ£o no preparo
                   </p>
                   <BarChart
                     data={toBarData(stats.porTensao, LABEL_TENSAO)}
@@ -435,35 +576,35 @@ export default function DashboardPage() {
               </div>
             </Section>
 
-            {/* Hipóteses */}
-            <Section titulo="Hipóteses">
+            {/* HipÃ³teses */}
+            <Section titulo="HipÃ³teses">
               <Card>
                 <HipoteseRow
-                  label="H1 — Tensão frequente no preparo (meta ≥ 40%)"
+                  label="H1 â€” TensÃ£o frequente no preparo (meta â‰¥ 40%)"
                   valor={stats.hipoteses.h1.valor}
                   confirmada={stats.hipoteses.h1.confirmada}
                 />
                 <HipoteseRow
-                  label="H3 — Reação 'resolve exatamente' (meta ≥ 30%)"
+                  label="H3 â€” ReaÃ§Ã£o 'resolve exatamente' (meta â‰¥ 30%)"
                   valor={stats.hipoteses.h3.valor}
                   confirmada={stats.hipoteses.h3.confirmada}
                 />
                 <HipoteseRow
-                  label="H4 — 'Palavras originais' como feature #1 (meta: posição 1)"
+                  label="H4 â€” 'Palavras originais' como feature #1 (meta: posiÃ§Ã£o 1)"
                   valor={stats.hipoteses.h4.posicao}
                   confirmada={stats.hipoteses.h4.confirmada}
                   tipo="posicao"
                 />
                 <HipoteseRow
-                  label="H5 — Disposição a pagar R$ 16–50/mês (meta ≥ 35%)"
+                  label="H5 â€” DisposiÃ§Ã£o a pagar R$ 16â€“50/mÃªs (meta â‰¥ 35%)"
                   valor={stats.hipoteses.h5.valor}
                   confirmada={stats.hipoteses.h5.confirmada}
                 />
               </Card>
             </Section>
 
-            {/* Análise IA — acionada por botão */}
-            <Section titulo="Análise IA">
+            {/* AnÃ¡lise IA â€” acionada por botÃ£o */}
+            <Section titulo="AnÃ¡lise IA">
               {!insights && !loadingAI && (
                 <button
                   onClick={gerarInsights}
@@ -494,7 +635,7 @@ export default function DashboardPage() {
                     flexShrink: 0,
                     fontSize: '16px',
                   }}>
-                    ✦
+                    âœ¦
                   </span>
                   <div>
                     <p style={{
@@ -504,7 +645,7 @@ export default function DashboardPage() {
                       color: 'var(--logos-tinta)',
                       margin: '0 0 2px',
                     }}>
-                      Gerar análise com IA
+                      Gerar anÃ¡lise com IA
                     </p>
                     <p style={{
                       fontFamily: 'var(--logos-font-body)',
@@ -512,7 +653,7 @@ export default function DashboardPage() {
                       color: 'var(--logos-tinta-light)',
                       margin: 0,
                     }}>
-                      Insights estratégicos e recomendação com base nos dados atuais
+                      Insights estratÃ©gicos e recomendaÃ§Ã£o com base nos dados atuais
                     </p>
                   </div>
                 </button>
@@ -537,7 +678,7 @@ export default function DashboardPage() {
                     flexShrink: 0,
                   }} />
                   <span style={{ fontFamily: 'var(--logos-font-body)', fontSize: '13px', color: 'var(--logos-tinta-light)' }}>
-                    Analisando dados…
+                    Analisando dadosâ€¦
                   </span>
                   <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
                 </div>
@@ -558,7 +699,7 @@ export default function DashboardPage() {
                     color: 'var(--logos-dourado)',
                     marginBottom: 'var(--logos-space-4)',
                   }}>
-                    Análise IA
+                    AnÃ¡lise IA
                   </p>
                   <h2 style={{
                     fontFamily: 'var(--logos-font-display)',
@@ -609,7 +750,7 @@ export default function DashboardPage() {
                       color: 'var(--logos-dourado)',
                       marginBottom: 'var(--logos-space-3)',
                     }}>
-                      Recomendação estratégica
+                      RecomendaÃ§Ã£o estratÃ©gica
                     </p>
                     <p style={{
                       fontFamily: 'var(--logos-font-body)',
@@ -631,3 +772,4 @@ export default function DashboardPage() {
     </main>
   )
 }
+

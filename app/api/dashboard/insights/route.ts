@@ -73,6 +73,14 @@ async function fetchStats(): Promise<DashboardStats> {
       h5: { valor: h5Valor, confirmada: h5Valor >= 35 },
     },
     porDia,
+    funil: {
+      started: 0,
+      completed: 0,
+      overallCompletionRate: 0,
+      biggestDropoffStep: null,
+      biggestDropoffLabel: null,
+    },
+    funilPorEtapa: [],
   }
 }
 

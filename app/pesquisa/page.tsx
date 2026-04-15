@@ -1,10 +1,10 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import { NavButtons } from '@/components/form/NavButtons'
 import { OptionButton } from '@/components/form/OptionButton'
 import { QuestionCard } from '@/components/form/QuestionCard'
-import { trackEvent } from '@/lib/tracking'
+import { trackEvent, trackFunnelEvent } from '@/lib/tracking'
 import { getTrackingSnapshot } from '@/lib/utm'
 import type {
   RespostasFormulario,
@@ -81,7 +81,7 @@ export default function PesquisaPage() {
   const [form, setForm] = useState<Partial<RespostasFormulario>>({
     ferramentas: [],
   })
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(-1)
   const [enviando, setEnviando] = useState(false)
   const [erroSubmit, setErroSubmit] = useState<string | null>(null)
 
@@ -90,6 +90,7 @@ export default function PesquisaPage() {
   const [erroWhatsapp, setErroWhatsapp] = useState<string | null>(null)
 
   const viewContentFiredRef = useRef(false)
+  const viewedStepsRef = useRef<Set<number>>(new Set())
 
   const frequenciaNuncaSelecionada = form.frequencia === 'nunca'
   const totalSteps = 5
@@ -102,8 +103,20 @@ export default function PesquisaPage() {
     }
   }, [])
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, 4))
+  useEffect(() => {
+    if (step < 0) return
+    if (viewedStepsRef.current.has(step)) return
+
+    viewedStepsRef.current.add(step)
+    trackFunnelEvent('step_view', step, STEP_LABELS[step], { formName: 'diagnostico' })
+  }, [step])
+
+  const nextStep = () => {
+    trackFunnelEvent('step_continue', step, STEP_LABELS[step], { formName: 'diagnostico' })
+    setStep((s) => Math.min(s + 1, 4))
+  }
   const prevStep = () => setStep((s) => Math.max(s - 1, 0))
+  const iniciar  = () => setStep(0)
 
   function updateField<K extends keyof RespostasFormulario>(
     key: K,
@@ -191,12 +204,172 @@ export default function PesquisaPage() {
       })
       if (!response.ok) throw new Error('Erro ao enviar formulário')
       const data = await response.json()
+      trackFunnelEvent('submit', 4, STEP_LABELS[4], {
+        formName: 'diagnostico',
+        eventId,
+      })
       window.location.href = `/diagnostico/${data.id}`
     } catch {
       setErroSubmit('Erro ao enviar. Tente novamente.')
     } finally {
       setEnviando(false)
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Tela intro — antes das perguntas
+  // ---------------------------------------------------------------------------
+
+  if (step === -1) {
+    return (
+      <main style={{
+        minHeight: '100svh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 'var(--logos-space-10) var(--logos-space-5)',
+        background:
+          'radial-gradient(circle at top left, rgba(184,149,42,0.08), transparent 32%), linear-gradient(180deg, var(--logos-papel) 0%, var(--logos-pergaminho) 100%)',
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '560px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          textAlign: 'left',
+          padding: 'clamp(28px, 5vw, 48px)',
+          border: '1px solid rgba(184,149,42,0.14)',
+          borderRadius: 'var(--logos-radius-lg)',
+          backgroundColor: 'rgba(253, 252, 248, 0.86)',
+          boxShadow: '0 24px 80px rgba(26, 23, 16, 0.08)',
+          backdropFilter: 'blur(6px)',
+        }}>
+          <span style={{
+            fontFamily: 'var(--logos-font-body)',
+            fontSize: '11px',
+            fontWeight: 500,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'var(--logos-dourado)',
+            marginBottom: 'var(--logos-space-4)',
+            display: 'block',
+          }}>
+            Diagnostico gratuito
+          </span>
+
+          <div style={{
+            width: '72px',
+            height: '2px',
+            backgroundColor: 'rgba(184,149,42,0.5)',
+            marginBottom: 'var(--logos-space-6)',
+          }} />
+
+          <h1 style={{
+            fontFamily: 'var(--logos-font-display)',
+            fontSize: 'clamp(38px, 7vw, 58px)',
+            fontWeight: 300,
+            lineHeight: 1.08,
+            letterSpacing: '-0.02em',
+            color: 'var(--logos-tinta)',
+            margin: '0 0 var(--logos-space-6)',
+          }}>
+            Descubra o que esta travando sua pregacao
+          </h1>
+
+          <p style={{
+            fontFamily: 'var(--logos-font-body)',
+            fontSize: '17px',
+            lineHeight: 1.75,
+            color: 'var(--logos-tinta-mid)',
+            margin: '0 0 var(--logos-space-10)',
+            maxWidth: '460px',
+          }}>
+            Responda algumas perguntas e receba seu perfil homiletico: o padrao especifico que esta sabotando seu preparo de sermoes.
+          </p>
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--logos-space-4)',
+            marginBottom: 'var(--logos-space-10)',
+            alignSelf: 'stretch',
+            textAlign: 'left',
+          }}>
+            {[
+              ['5 minutos para responder', 'Perguntas objetivas, sem enrolacao'],
+              ['Resultado imediato', 'Seu perfil aparece na tela, sem espera'],
+              ['100% gratuito', 'Sem cadastro previo para comecar'],
+            ].map(([titulo, desc]) => (
+              <div
+                key={titulo}
+                style={{
+                  display: 'flex',
+                  gap: 'var(--logos-space-4)',
+                  alignItems: 'flex-start',
+                  padding: 'var(--logos-space-4)',
+                  border: '1px solid rgba(184,149,42,0.12)',
+                  borderRadius: 'var(--logos-radius-md)',
+                  backgroundColor: 'rgba(245, 242, 235, 0.55)',
+                }}
+              >
+                <span style={{
+                  width: '24px',
+                  height: '24px',
+                  minWidth: '24px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--logos-dourado-faint)',
+                  border: '1px solid var(--logos-border-emphasis)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '1px',
+                }}>
+                  <span style={{ fontSize: '11px', color: 'var(--logos-dourado)', fontWeight: 600 }}>+</span>
+                </span>
+                <div>
+                  <span style={{
+                    fontFamily: 'var(--logos-font-body)',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: 'var(--logos-tinta)',
+                    display: 'block',
+                    marginBottom: '2px',
+                  }}>{titulo}</span>
+                  <span style={{
+                    fontFamily: 'var(--logos-font-body)',
+                    fontSize: '13px',
+                    color: 'var(--logos-tinta-mid)',
+                    lineHeight: 1.55,
+                  }}>{desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={iniciar}
+            style={{
+              width: '100%',
+              fontFamily: 'var(--logos-font-body)',
+              fontSize: '14px',
+              fontWeight: 500,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--logos-vespera)',
+              backgroundColor: 'var(--logos-dourado)',
+              border: 'none',
+              borderRadius: 'var(--logos-radius-sm)',
+              padding: 'var(--logos-space-4) var(--logos-space-8)',
+              cursor: 'pointer',
+              boxShadow: '0 14px 28px rgba(184,149,42,0.22)',
+            }}
+          >
+            Iniciar diagnostico ?
+          </button>
+        </div>
+      </main>
+    )
   }
 
   // ---------------------------------------------------------------------------
@@ -687,3 +860,6 @@ export default function PesquisaPage() {
     </main>
   )
 }
+
+
+
