@@ -134,8 +134,30 @@ export interface BlocoPerfil {
 
 export interface BlocoCTA {
   nome: string
-  whatsapp?: string
+  email: string     // obrigatório
+  whatsapp: string  // obrigatório
   optou_lista: boolean
+}
+
+// ---------------------------------------------------------------------------
+// TRACKING — dados de aquisição enviados junto com o formulário
+// ---------------------------------------------------------------------------
+
+export interface TrackingPayload {
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_term?: string
+  utm_content?: string
+  gclid?: string
+  fbclid?: string
+  fbp?: string
+  fbc?: string
+  page_url?: string
+  referrer?: string
+  user_agent?: string
+  ga_client_id?: string
+  event_id?: string  // para deduplicação pixel web ↔ CAPI
 }
 
 // ---------------------------------------------------------------------------
@@ -155,7 +177,6 @@ export interface RespostasFormulario
 
 /**
  * Perfil gerado pela lógica de diagnóstico (lib/diagnostico.ts).
- * @todo Substituir por union type concreto após lib/diagnostico.ts ser fornecido.
  */
 export type PerfilGerado = string
 
@@ -177,10 +198,24 @@ export interface DiagnosticoJson {
 }
 
 /**
- * Registro completo salvo após processamento — inclui resposta do usuário
- * mais os dados gerados pelo sistema de diagnóstico.
+ * Registro completo salvo após processamento — inclui resposta do usuário,
+ * dados gerados pelo diagnóstico e metadados de tracking.
  */
 export interface RespostaCompleta extends RespostasFormulario {
   perfil_gerado: PerfilGerado
   diagnostico_json: DiagnosticoJson
+  // Tracking — todos nullable para compatibilidade com rows antigos
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  utm_term?: string | null
+  utm_content?: string | null
+  gclid?: string | null
+  fbclid?: string | null
+  fbp?: string | null
+  fbc?: string | null
+  page_url?: string | null
+  referrer?: string | null
+  user_agent?: string | null
+  ip_address?: string | null
 }

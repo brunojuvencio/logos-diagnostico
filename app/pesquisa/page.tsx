@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { NavButtons } from '@/components/form/NavButtons'
 import { OptionButton } from '@/components/form/OptionButton'
 import { QuestionCard } from '@/components/form/QuestionCard'
+import { trackEvent } from '@/lib/tracking'
+import { getTrackingSnapshot } from '@/lib/utm'
 import type {
   RespostasFormulario,
   Ferramenta,
@@ -41,9 +43,34 @@ const INPUT_STYLE: React.CSSProperties = {
   transition: 'border-color var(--logos-duration-default) var(--logos-ease-default)',
 }
 
+const INPUT_ERROR_STYLE: React.CSSProperties = {
+  ...INPUT_STYLE,
+  borderColor: '#c0392b',
+}
+
 const TEXTAREA_STYLE: React.CSSProperties = {
   ...INPUT_STYLE,
   resize: 'none',
+}
+
+const ERROR_TEXT_STYLE: React.CSSProperties = {
+  fontFamily: 'var(--logos-font-body)',
+  fontSize: '12px',
+  color: '#c0392b',
+  marginTop: 'var(--logos-space-1)',
+}
+
+// ---------------------------------------------------------------------------
+// Validação de campos
+// ---------------------------------------------------------------------------
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+}
+
+function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, '')
+  return digits.length >= 10 && digits.length <= 15
 }
 
 // ---------------------------------------------------------------------------
@@ -57,9 +84,23 @@ export default function PesquisaPage() {
   const [step, setStep] = useState(0)
   const [enviando, setEnviando] = useState(false)
   const [erroSubmit, setErroSubmit] = useState<string | null>(null)
-  const frequenciaNuncaSelecionada = form.frequencia === 'nunca'
 
+  // Erros inline para campos do step 4
+  const [erroEmail, setErroEmail]       = useState<string | null>(null)
+  const [erroWhatsapp, setErroWhatsapp] = useState<string | null>(null)
+
+  const viewContentFiredRef = useRef(false)
+
+  const frequenciaNuncaSelecionada = form.frequencia === 'nunca'
   const totalSteps = 5
+
+  // Dispara ViewContent uma vez quando o formulário carrega
+  useEffect(() => {
+    if (!viewContentFiredRef.current) {
+      viewContentFiredRef.current = true
+      trackEvent('ViewContent')
+    }
+  }, [])
 
   const nextStep = () => setStep((s) => Math.min(s + 1, 4))
   const prevStep = () => setStep((s) => Math.max(s - 1, 0))
@@ -98,6 +139,10 @@ export default function PesquisaPage() {
         return (
           typeof f.nome === 'string' &&
           f.nome.trim().length > 0 &&
+          typeof f.email === 'string' &&
+          isValidEmail(f.email) &&
+          typeof f.whatsapp === 'string' &&
+          isValidPhone(f.whatsapp) &&
           typeof f.optou_lista === 'boolean'
         )
       default:
@@ -105,14 +150,44 @@ export default function PesquisaPage() {
     }
   }
 
+  function validarStep4(): boolean {
+    let valido = true
+
+    if (!form.email || !isValidEmail(form.email)) {
+      setErroEmail('Digite um e-mail válido.')
+      valido = false
+    } else {
+      setErroEmail(null)
+    }
+
+    if (!form.whatsapp || !isValidPhone(form.whatsapp)) {
+      setErroWhatsapp('Digite um número válido com DDD (mín. 10 dígitos).')
+      valido = false
+    } else {
+      setErroWhatsapp(null)
+    }
+
+    return valido
+  }
+
   async function handleSubmit() {
+    if (!validarStep4()) return
+
     setEnviando(true)
     setErroSubmit(null)
+
+    // Captura snapshot de tracking antes de enviar
+    const tracking = getTrackingSnapshot()
+    // Gera event_id único para deduplicação pixel ↔ CAPI
+    const eventId = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+
     try {
       const response = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, tracking: { ...tracking, event_id: eventId } }),
       })
       if (!response.ok) throw new Error('Erro ao enviar formulário')
       const data = await response.json()
@@ -506,6 +581,8 @@ export default function PesquisaPage() {
                 descricao="Seu perfil aparece na tela logo depois — não vai para email, não tem espera."
               >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--logos-space-4)' }}>
+
+                  {/* Nome */}
                   <div>
                     <label style={LABEL_STYLE}>Nome *</label>
                     <input
@@ -516,21 +593,41 @@ export default function PesquisaPage() {
                       onChange={(e) => updateField('nome', e.target.value)}
                     />
                   </div>
+
+                  {/* E-mail */}
                   <div>
-                    <label style={LABEL_STYLE}>
-                      WhatsApp{' '}
-                      <span style={{ fontWeight: 400, letterSpacing: 0, textTransform: 'none' }}>
-                        (opcional)
-                      </span>
-                    </label>
+                    <label style={LABEL_STYLE}>E-mail *</label>
+                    <input
+                      type="email"
+                      autoComplete="email"
+                      style={erroEmail ? INPUT_ERROR_STYLE : INPUT_STYLE}
+                      placeholder="seu@email.com"
+                      value={form.email ?? ''}
+                      onChange={(e) => {
+                        updateField('email', e.target.value)
+                        if (erroEmail && isValidEmail(e.target.value)) setErroEmail(null)
+                      }}
+                    />
+                    {erroEmail && <p style={ERROR_TEXT_STYLE}>{erroEmail}</p>}
+                  </div>
+
+                  {/* WhatsApp */}
+                  <div>
+                    <label style={LABEL_STYLE}>WhatsApp *</label>
                     <input
                       type="tel"
-                      style={INPUT_STYLE}
+                      autoComplete="tel"
+                      style={erroWhatsapp ? INPUT_ERROR_STYLE : INPUT_STYLE}
                       placeholder="(00) 00000-0000"
                       value={form.whatsapp ?? ''}
-                      onChange={(e) => updateField('whatsapp', e.target.value)}
+                      onChange={(e) => {
+                        updateField('whatsapp', e.target.value)
+                        if (erroWhatsapp && isValidPhone(e.target.value)) setErroWhatsapp(null)
+                      }}
                     />
+                    {erroWhatsapp && <p style={ERROR_TEXT_STYLE}>{erroWhatsapp}</p>}
                   </div>
+
                 </div>
               </QuestionCard>
 

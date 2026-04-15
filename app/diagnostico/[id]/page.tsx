@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { DiagnosticoTracking } from '@/components/DiagnosticoTracking'
 import type { RespostaRow } from '@/lib/supabase'
 import type { DiagnosticoJson } from '@/types/pesquisa'
 
@@ -34,6 +35,13 @@ export default async function DiagnosticoPage({ params }: Props) {
         color: '#1a1a1a',
       }}
     >
+      {/* Tracking de conversão — CompleteRegistration (Meta) + sign_up (GA4) */}
+      <DiagnosticoTracking
+        email={resposta.email ?? undefined}
+        phone={resposta.whatsapp ?? undefined}
+        firstName={resposta.nome?.split(' ')[0]}
+      />
+
       {/* Eyebrow */}
       <p
         style={{
